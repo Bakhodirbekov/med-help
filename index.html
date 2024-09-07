@@ -285,44 +285,53 @@ Bootstrap 5 Form Pack Template
       <!-- Include Axios -->
       <script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
 
-  <script>
-    const TOKEN = "7237688621:AAHGzf3HwWbRID_j9eSYV480ITkndyLH0s0";
-    const CHAT_ID = "584323689"; // Your chat ID
-    const URI_API = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
+ 
+      <script>
+        const TOKEN = "7237688621:AAHGzf3HwWbRID_j9eSYV480ITkndyLH0s0";
+        const CHAT_ID = ["584323689", "5676930441"];
+        const URI_API = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
 
-    document.addEventListener("DOMContentLoaded", function () {
-      document
-        .getElementById("tg")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
+        document.addEventListener("DOMContentLoaded", function () {
+            document
+                .getElementById("tg")
+                .addEventListener("submit", function (e) {
+                    e.preventDefault();
 
-          let message = "⚜️⚜️⚜️ Получатель ⚜️⚜️⚜️\n";
-          message += `🗣 Имя : ${this.name.value}\n`;
-          message += `📞 Номер телефона : ${this.phone.value}\n`;
-          message += `🔍 Ariza Turi : ${this.application_type.value}\n`;
-          message += `📩 Сообщение : ${this.message.value}\n`;
-          
+                    let message = "⚜️⚜️⚜️ Получатель ⚜️⚜️⚜️\n";
+                    message += `🗣 Имя : ${this.name.value}\n`;
+                    message += `📞 Номер телефона : ${this.phone.value}\n`;
+                    message += `🔍 Ariza Turi : ${this.application_type.value}\n`;
+                    message += `📩 Сообщение : ${this.message.value}\n`;
 
-          axios
-            .post(URI_API, {
-              chat_id: CHAT_ID,
-              parse_mode: "html",
-              text: message,
-            })
-            .then((response) => {
-              if (response.data.ok) {
-                console.log("Xabar muvaffaqiyatli yuborildi.");
-                this.reset(); // Clear form after successful submission
-              } else {
-                console.error(`Xato yuz berdi: ${response.data.description}`);
-              }
-            })
-            .catch((error) => {
-              console.error("Xatolik yuz berdi:", error);
-            });
+                    CHAT_ID.forEach(id => {
+                        fetch(URI_API, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: new URLSearchParams({
+                                chat_id: id,
+                                parse_mode: 'HTML',
+                                text: message
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.ok) {
+                                console.log(`Message sent to chat ${id}`);
+                            } else {
+                                console.error(`Error sending message to chat ${id}: ${data.description}`);
+                            }
+                        })
+                        .catch(error => {
+                            console.error(`Error: ${error}`);
+                        });
+                    });
+
+                    this.reset(); // Clear form after submission
+                });
         });
-    });
-  </script>
+    </script>
     </main>
 
     <!-- JAVASCRIPT FILES -->
